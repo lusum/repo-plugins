@@ -17,12 +17,12 @@ msgid "Browse through the movie-catalogue"
 msgstr "Doorblader de filmcatalogus"
 
 msgctxt "#30005"
-msgid "Series"
-msgstr "Programma's"
+msgid "Shorties"
+msgstr "Shorties"
 
 msgctxt "#30006"
-msgid "Browse through the series-catalogue"
-msgstr "Doorblader de programmacatalogus"
+msgid "Browse through the shorties-catalogue"
+msgstr "Doorblader de shortiescatalogus"
 
 msgctxt "#30007"
 msgid "Channels"
@@ -201,6 +201,10 @@ msgctxt "#30706"
 msgid "The authentication tokens are removed."
 msgstr "De authenticatietokens zijn gewist."
 
+msgctxt "#30707"
+msgid "The cache has been cleared."
+msgstr "De cache is leeg gemaakt."
+
 msgctxt "#30708"
 msgid "Please restart Kodi."
 msgstr "Gelieve Kodi te herstarten."
@@ -228,10 +232,6 @@ msgstr "De gevraagde video werd niet gevonden in de tv-gids."
 msgctxt "#30717"
 msgid "This program is not available in the VTM GO catalogue."
 msgstr "Dit programma is niet beschikbaar in de VTM GO catalogus."
-
-msgctxt "#30718"
-msgid "The Manifest proxy is not running. Please restart Kodi."
-msgstr "De Manifest-proxy is niet gestart. Gelieve Kodi te herstarten."
 
 # SETTINGS
 msgctxt "#30820"
@@ -326,10 +326,6 @@ msgctxt "#30887"
 msgid "InputStream Helper settings…"
 msgstr "InputStream Helper configuratie…"
 
-msgctxt "#30888"
-msgid "Modify the MPEG DASH Manifest to workaround an InputStream Adaptive bug"
-msgstr "Pas de MPEG DASH Manifest aan om rond een bug in InputStream Adaptive te werken"
-
 msgctxt "#30889"
 msgid "Logging"
 msgstr "Logboek"
@@ -353,3 +349,11 @@ msgstr "Authenticatie"
 msgctxt "#30895"
 msgid "Clear authentication tokens…"
 msgstr "Verwijder authenticatietokens…"
+
+msgctxt "#30896"
+msgid "Cache"
+msgstr "Cache"
+
+msgctxt "#30897"
+msgid "Clear cache…"
+msgstr "Maak cache leeg…"

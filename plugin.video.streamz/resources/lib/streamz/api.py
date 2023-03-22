@@ -7,7 +7,7 @@ import json
 import logging
 
 from resources.lib import kodiutils
-from resources.lib.streamz import API_ANDROID_ENDPOINT, API_ENDPOINT, PRODUCT_STREAMZ_KIDS, Category, Episode, Movie, Program, Season, util
+from resources.lib.streamz import API_ANDROID_ENDPOINT, API_ENDPOINT, Category, Episode, Movie, Program, Season, util
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,11 +36,12 @@ class Api:
 
     def _mode(self):
         """ Return the mode that should be used for API calls. """
-        return 'streamz-kids' if self._tokens.product == PRODUCT_STREAMZ_KIDS else 'streamz'
+        return self._tokens.product
 
-    def get_config(self):
+    @staticmethod
+    def get_config():
         """ Returns the config for the app. """
-        response = util.http_get(API_ANDROID_ENDPOINT + '/streamz/config', token=self._tokens.access_token)
+        response = util.http_get(API_ANDROID_ENDPOINT + '/streamz/config')
         info = json.loads(response.text)
 
         # This contains a player.updateIntervalSeconds that could be used to notify Streamz about the playing progress
@@ -101,7 +102,7 @@ class Api:
         result = json.loads(response.text)
 
         items = []
-        for item in result.get('row', {}).get('teasers'):
+        for item in result.get('teasers'):
             if item.get('target', {}).get('type') == CONTENT_TYPE_MOVIE:
                 items.append(self._parse_movie_teaser(item))
 
@@ -138,16 +139,16 @@ class Api:
 
         return items
 
-    def add_mylist(self, video_type, content_id):
+    def add_mylist(self, content_id):
         """ Add an item to My List. """
-        util.http_put(API_ENDPOINT + '/%s/userData/myList/%s/%s' % (self._mode(), video_type, content_id),
+        util.http_put(API_ENDPOINT + '/%s/userData/myList/%s' % (self._mode(), content_id),
                       token=self._tokens.access_token,
                       profile=self._tokens.profile)
         kodiutils.set_cache(['swimlane', 'my-list'], None)
 
-    def del_mylist(self, video_type, content_id):
+    def del_mylist(self, content_id):
         """ Delete an item from My List. """
-        util.http_delete(API_ENDPOINT + '/%s/userData/myList/%s/%s' % (self._mode(), video_type, content_id),
+        util.http_delete(API_ENDPOINT + '/%s/userData/myList/%s' % (self._mode(), content_id),
                          token=self._tokens.access_token,
                          profile=self._tokens.profile)
         kodiutils.set_cache(['swimlane', 'my-list'], None)
@@ -167,13 +168,12 @@ class Api:
         else:
             movie = None
 
-        if movie is None:
+        if not movie:
             # Fetch from API
-            response = util.http_get(API_ENDPOINT + '/%s/movies/%s' % (self._mode(), movie_id),
+            response = util.http_get(API_ENDPOINT + '/%s/detail/%s' % (self._mode(), movie_id),
                                      token=self._tokens.access_token,
                                      profile=self._tokens.profile)
-            info = json.loads(response.text)
-            movie = info.get('movie', {})
+            movie = json.loads(response.text)
             kodiutils.set_cache(['movie', movie_id], movie)
 
         return Movie(
@@ -181,10 +181,11 @@ class Api:
             name=movie.get('name'),
             description=movie.get('description'),
             duration=movie.get('durationSeconds'),
-            thumb=movie.get('teaserImageUrl'),
-            fanart=movie.get('bigPhotoUrl'),
+            poster=movie.get('portraitTeaserImageUrl'),
+            thumb=movie.get('landscapeTeaserImageUrl'),
+            fanart=movie.get('backgroundImageUrl'),
             year=movie.get('productionYear'),
-            geoblocked=movie.get('geoBlocked'),
+            geoblocked=movie.get('blockedFor') == 'GEO',
             remaining=movie.get('remainingDaysAvailable'),
             legal=movie.get('legalIcons'),
             # aired=movie.get('broadcastTimestamp'),
@@ -208,34 +209,39 @@ class Api:
         else:
             program = None
 
-        if program is None:
+        if not program:
             # Fetch from API
-            response = util.http_get(API_ENDPOINT + '/%s/programs/%s' % (self._mode(), program_id),
+            response = util.http_get(API_ENDPOINT + '/%s/detail/%s' % (self._mode(), program_id),
                                      token=self._tokens.access_token,
                                      profile=self._tokens.profile)
-            info = json.loads(response.text)
-            program = info.get('program', {})
+            program = json.loads(response.text)
             kodiutils.set_cache(['program', program_id], program)
 
         channel = self._parse_channel(program.get('channelLogoUrl'))
 
         seasons = {}
-        for item_season in program.get('seasons', []):
+        for item_season in program.get('seasonIndices', []):
             episodes = {}
 
-            for item_episode in item_season.get('episodes', []):
+            # Fetch season
+            season_response = util.http_get(API_ENDPOINT + '/%s/detail/%s?selectedSeasonIndex=%s' % (self._mode(), program_id, item_season),
+                                            token=self._tokens.access_token,
+                                            profile=self._tokens.profile)
+            season = json.loads(season_response.text).get('selectedSeason')
+
+            for item_episode in season.get('episodes', []):
                 episodes[item_episode.get('index')] = Episode(
                     episode_id=item_episode.get('id'),
                     program_id=program_id,
                     program_name=program.get('name'),
                     number=item_episode.get('index'),
-                    season=item_season.get('index'),
+                    season=item_season,
                     name=item_episode.get('name'),
                     description=item_episode.get('description'),
                     duration=item_episode.get('durationSeconds'),
-                    thumb=item_episode.get('bigPhotoUrl'),
-                    fanart=item_episode.get('bigPhotoUrl'),
-                    geoblocked=program.get('geoBlocked'),
+                    thumb=item_episode.get('imageUrl'),
+                    fanart=item_episode.get('imageUrl'),
+                    geoblocked=program.get('blockedFor') == 'GEO',
                     remaining=item_episode.get('remainingDaysAvailable'),
                     channel=channel,
                     legal=program.get('legalIcons'),
@@ -245,8 +251,8 @@ class Api:
                     available=item_episode.get('blockedFor') != 'SUBSCRIPTION',
                 )
 
-            seasons[item_season.get('index')] = Season(
-                number=item_season.get('index'),
+            seasons[item_season] = Season(
+                number=item_season,
                 episodes=episodes,
                 channel=channel,
                 legal=program.get('legalIcons'),
@@ -256,9 +262,9 @@ class Api:
             program_id=program.get('id'),
             name=program.get('name'),
             description=program.get('description'),
-            thumb=program.get('teaserImageUrl'),
-            fanart=program.get('bigPhotoUrl'),
-            geoblocked=program.get('geoBlocked'),
+            thumb=program.get('landscapeTeaserImageUrl'),
+            fanart=program.get('backgroundImageUrl'),
+            geoblocked=program.get('blockedFor') == 'GEO',
             seasons=seasons,
             channel=channel,
             legal=program.get('legalIcons'),
@@ -309,7 +315,7 @@ class Api:
         :type episode_id: str
         :rtype Episode
         """
-        response = util.http_get(API_ENDPOINT + '/%s/play/episodes/%s' % (self._mode(), episode_id),
+        response = util.http_get(API_ENDPOINT + '/%s/play/%s' % (self._mode(), episode_id),
                                  token=self._tokens.access_token,
                                  profile=self._tokens.profile)
         episode = json.loads(response.text)
@@ -371,7 +377,7 @@ class Api:
             movie_id=item.get('target', {}).get('id'),
             name=item.get('title'),
             thumb=item.get('imageUrl'),
-            geoblocked=item.get('geoBlocked'),
+            geoblocked=item.get('blockedFor') == 'GEO',
             available=item.get('blockedFor') != 'SUBSCRIPTION',
         )
 
@@ -390,7 +396,7 @@ class Api:
             program_id=item.get('target', {}).get('id'),
             name=item.get('title'),
             thumb=item.get('imageUrl'),
-            geoblocked=item.get('geoBlocked'),
+            geoblocked=item.get('blockedFor') == 'GEO',
             available=item.get('blockedFor') != 'SUBSCRIPTION',
         )
 
@@ -409,7 +415,7 @@ class Api:
             program_name=item.get('title'),
             name=item.get('label'),
             description=episode.description if episode else None,
-            geoblocked=item.get('geoBlocked'),
+            geoblocked=item.get('blockedFor') == 'GEO',
             thumb=item.get('imageUrl'),
             progress=item.get('playerPositionSeconds'),
             watched=False,

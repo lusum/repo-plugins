@@ -7,10 +7,10 @@ API_ENDPOINT = 'https://lfvp-api.dpgmedia.net'
 API_ANDROID_ENDPOINT = 'https://lfvp-android-api.dpgmedia.net'
 
 # These seem to be hardcoded
-STOREFRONT_MAIN = '9620cc0b-0f97-4d96-902a-827dcfd0b227'
-STOREFRONT_MOVIES = 'e3fc0750-f110-4808-ae5f-246846ff940f'
-STOREFRONT_SERIES = '1c683de4-3fb0-4cc4-9d9c-c365eba1b155'
-STOREFRONT_KIDS = '73f34fbf-301c-4deb-b366-13ba39e25996'
+STOREFRONT_MAIN = 'main'
+STOREFRONT_MOVIES = 'movies'
+STOREFRONT_SHORTIES = 'shorties'
+STOREFRONT_KIDS = 'kids'
 
 
 class Profile:
@@ -250,14 +250,14 @@ class Episode:
 class ResolvedStream:
     """ Defines a stream that we can play"""
 
-    def __init__(self, program=None, program_id=None, title=None, duration=None, url=None, license_url=None, subtitles=None, cookies=None):
+    def __init__(self, program=None, program_id=None, title=None, duration=None, url=None, license_key=None, subtitles=None, cookies=None):
         """
         :type program: str|None
         :type program_id: int|None
         :type title: str
         :type duration: str|None
         :type url: str
-        :type license_url: str
+        :type license_key: str
         :type subtitles: list[str]
         :type cookies: dict
         """
@@ -266,7 +266,7 @@ class ResolvedStream:
         self.title = title
         self.duration = duration
         self.url = url
-        self.license_url = license_url
+        self.license_key = license_key
         self.subtitles = subtitles
         self.cookies = cookies
 

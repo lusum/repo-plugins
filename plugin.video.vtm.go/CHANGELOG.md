@@ -1,5 +1,58 @@
 # Changelog
 
+## [v1.4.1](https://github.com/add-ons/plugin.video.vtm.go/tree/v1.4.1) (2023-02-08)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.vtm.go/compare/v1.4.0...v1.4.1)
+
+**Fixed bugs:**
+
+- Fix livestreams on Kodi 19 [\#354](https://github.com/add-ons/plugin.video.vtm.go/pull/354) ([mediaminister](https://github.com/mediaminister))
+
+## [v1.4.0](https://github.com/add-ons/plugin.video.vtm.go/tree/v1.4.0) (2023-02-04)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.vtm.go/compare/v1.3.3...v1.4.0)
+
+**Implemented enhancements:**
+
+- Add EPG for VTM Non-Stop [\#352](https://github.com/add-ons/plugin.video.vtm.go/pull/352) ([michaelarnauts](https://github.com/michaelarnauts))
+- Remove manifest proxy [\#351](https://github.com/add-ons/plugin.video.vtm.go/pull/351) ([michaelarnauts](https://github.com/michaelarnauts))
+
+**Merged pull requests:**
+
+- Remove VTM Kids channel since they stopped airing [\#350](https://github.com/add-ons/plugin.video.vtm.go/pull/350) ([michaelarnauts](https://github.com/michaelarnauts))
+- Update to Popcorn SDK 6 [\#349](https://github.com/add-ons/plugin.video.vtm.go/pull/349) ([mediaminister](https://github.com/mediaminister))
+- Fix subtitles in Kodi 20 [\#347](https://github.com/add-ons/plugin.video.vtm.go/pull/347) ([mediaminister](https://github.com/mediaminister))
+
+## [v1.3.3](https://github.com/add-ons/plugin.video.vtm.go/tree/v1.3.3) (2023-01-04)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.vtm.go/compare/v1.3.2...v1.3.3)
+
+**Fixed bugs:**
+
+- Filter category names [\#335](https://github.com/add-ons/plugin.video.vtm.go/pull/335) ([michaelarnauts](https://github.com/michaelarnauts))
+
+**Merged pull requests:**
+
+- Update to version 13 API [\#343](https://github.com/add-ons/plugin.video.vtm.go/pull/343) ([mediaminister](https://github.com/mediaminister))
+
+## [v1.3.2](https://github.com/add-ons/plugin.video.vtm.go/tree/v1.3.2) (2022-06-06)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.vtm.go/compare/v1.3.1...v1.3.2)
+
+**Fixed bugs:**
+
+- Allow to clear cache, and don't use empty cached items [\#330](https://github.com/add-ons/plugin.video.vtm.go/pull/330) ([michaelarnauts](https://github.com/michaelarnauts))
+- Throw decent error on a geoblock exception [\#329](https://github.com/add-ons/plugin.video.vtm.go/pull/329) ([michaelarnauts](https://github.com/michaelarnauts))
+- Fix empty movie entries in list after play [\#327](https://github.com/add-ons/plugin.video.vtm.go/pull/327) ([tatankat](https://github.com/tatankat))
+
+## [v1.3.1](https://github.com/add-ons/plugin.video.vtm.go/tree/v1.3.1) (2022-06-01)
+
+[Full Changelog](https://github.com/add-ons/plugin.video.vtm.go/compare/v1.3.0...v1.3.1)
+
+**Fixed bugs:**
+
+- Upgrade VTMGO REST API to version 12 [\#325](https://github.com/add-ons/plugin.video.vtm.go/pull/325) ([CasvanDongen](https://github.com/CasvanDongen))
+
 ## [v1.3.0](https://github.com/add-ons/plugin.video.vtm.go/tree/v1.3.0) (2021-12-19)
 
 [Full Changelog](https://github.com/add-ons/plugin.video.vtm.go/compare/v1.2.12...v1.3.0)

@@ -46,6 +46,13 @@ def auth_clear_tokens():
     Authentication().clear_tokens()
 
 
+@routing.route('/auth/clear-cache')
+def auth_clear_cache():
+    """ Clear the cache """
+    from resources.lib.modules.authentication import Authentication
+    Authentication().clear_cache()
+
+
 @routing.route('/channels')
 def show_channels():
     """ Shows Live TV channels """
@@ -109,18 +116,18 @@ def show_mylist():
     Catalog().show_mylist()
 
 
-@routing.route('/catalog/mylist/add/<video_type>/<content_id>')
-def mylist_add(video_type, content_id):
+@routing.route('/catalog/mylist/add/<content_id>')
+def mylist_add(content_id):
     """ Add an item to "My List" """
     from resources.lib.modules.catalog import Catalog
-    Catalog().mylist_add(video_type, content_id)
+    Catalog().mylist_add(content_id)
 
 
-@routing.route('/catalog/mylist/del/<video_type>/<content_id>')
-def mylist_del(video_type, content_id):
+@routing.route('/catalog/mylist/del/<content_id>')
+def mylist_del(content_id):
     """ Remove an item from "My List" """
     from resources.lib.modules.catalog import Catalog
-    Catalog().mylist_del(video_type, content_id)
+    Catalog().mylist_del(content_id)
 
 
 @routing.route('/catalog/continuewatching')
